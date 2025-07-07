@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Placar Fodinha Hortus- Mobile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+  * {
+    box-sizing: border-box;
+    margin: 0; /* zero pra evitar margem extra */
+    padding: 0;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 8px;
+    padding: 12px;
+    background: #f4f4f4;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 1.5rem;
+  }
+  
+  .controls, .jogadores {
+    margin-top: 12px;
+  }
+  
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .input-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  input[type="text"], input[type="number"] {
+    flex: 1;
+    padding: 6px;
+    font-size: 14px;
+    min-width: 80px;
+  }
+  
+  .botao {
+    padding: 8px;
+    font-size: 14px;
+    background: #6200ea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  
+  .botao:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+  }
+  
+  .jogadores {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .jogador-card {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    font-size: 14px;
+    height:99px ;
+  }
+  
+  
+  .jogador-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1 1 auto;
+    height:99px ;
+  }
+  
+  .jogador-info img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .jogador-info span {
+    display: flex;
+    flex-direction: row;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .pontosdiv {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    font-weight: 900;
+    font-size: 1.8rem;
+    width: 48px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 8px;
+  
+    user-select: none;
+    margin-top: -9px;
+    margin-left: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    flex-shrink: 0;
+  }
+  
+  .pontosdivcantada {
+    background-color: #1e1e1e;
+    color: #fff;
+    font-weight: 900;
+    font-size: 1.8rem;
+    width: 48px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow:
+      1px 1px 3px rgba(0, 0, 0, 0.7),
+      inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    user-select: none;
+    margin-top: -5px;
+    margin-left: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    flex-shrink: 0;
+  }
+  
+  .acoes {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+  
+  
+  .acoes input {
+    width: 18px;
+    text-align: center;
+    font-size: 14px;
+    padding: 3px;
+  }
+  
+  .acoes .botoes {
+    display: flex;
+    gap: 6px;
+  }
+  
+  .acoes button {
+    padding: 5px 8px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    min-width: 30px;
+  }
+  
+  .acoes .mais { background: #4caf50; color: white; }
+  .acoes .menos { background: #f44336; color: white; }
+  .acoes .excluir { background: #999; color: white; }
+  
+  /* Media query para modo paisagem (deitado) iPhone 13 tem 844px largura */
+  @media (max-width: 844px) and (orientation: landscape) {
+    body {
+      margin: 6px;
+      padding: 8px;
+    }
+  
+    .jogador-card {
+      font-size: 12px;
+      padding: 8px;
+    }
+  
+    .pontosdiv {
+      font-size: 1.4rem;
+      width: 40px;
+      height: 32px;
+      line-height: 32px;
+    }
+  
+    .acoes {
+      min-width: 100px;
+    }
+  }
+</style>
+  
+</head>
+<body>
+
+  <h1>Placar Fodinha Hortus</h1>
+
+  <!-- CONTROLES INICIAIS -->
+  <div class="controls" id="controlesIniciais">
+    <button id="fullscreenBtn" class="botao">Tela Cheia</button>
+
+    <div class="input-group">
+      <label for="pontosIniciais">Pontos iniciais:</label>
+      <input type="number" id="pontosIniciais" value="0" min="0" />
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="nomeJogador" placeholder="Nome do jogador" />
+      <button class="botao" onclick="adicionarJogador()">Adicionar</button>
+    </div>
+
+    <button class="botao" onclick="definirPontosIniciais()">Definir Pontuação Inicial</button>
+  </div>
+
+  <!-- BOTÕES DE RODADA -->
+  
+  <div class="controls">
+    <button class="botao" onclick="comecarRodada()">🎲 Começar Rodada</button>
+    <button class="botao" onclick="finalizarRodada()">✅ Finalizar Rodada</button>
+    <!-- Botão Reiniciar -->
+    <button class="botao" onclick="reiniciarTudo()">🔄 Reiniciar Tudo</button>
+
+</div>
+
+  <!-- LISTA DE JOGADORES -->
+  <div class="jogadores" id="listaJogadores"></div>
+
+  <script>
+  let jogadores = [];
+let pontosIniciais = 0;
+let rodadaIniciada = false;
+let previsoesIniciais = []; // guarda previsão original no começo da rodada
+
+// Mensagens de punição e bônus (substitua depois)
+const punicoesMais = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const punicoesMenos = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const bonuses = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+// Carregar dados do localStorage ao iniciar a página
+window.onload = () => {
+  const dados = localStorage.getItem('placarFonha');
+  if (dados) {
+    jogadores = JSON.parse(dados);
+    atualizarJogadores();
+  }
+};
+
+function falar(texto) {
+  const utterance = new SpeechSynthesisUtterance(texto);
+  utterance.lang = 'pt-BR';
+  speechSynthesis.speak(utterance);
+}
+
+function salvarDados() {
+  localStorage.setItem('placarFonha', JSON.stringify(jogadores));
+}
+
+function definirPontosIniciais() {
+  const valor = parseInt(document.getElementById("pontosIniciais").value) || 0;
+  pontosIniciais = valor;
+  jogadores.forEach(j => {
+    j.pontos = pontosIniciais;
+    j.previsao = 0;
+  });
+  atualizarJogadores();
+  salvarDados();
+}
+
+function adicionarJogador() {
+  const nome = document.getElementById("nomeJogador").value.trim();
+  if (!nome) return;
+
+  const novoJogador = {
+    nome,
+    pontos: pontosIniciais,
+    previsao: 0,
+    foto: `https://picsum.photos/seed/${encodeURIComponent(nome)}/40/40`
+  };
+
+  jogadores.push(novoJogador);
+  document.getElementById("nomeJogador").value = "";
+  atualizarJogadores();
+  salvarDados();
+}
+
+// Altera previsão + / -
+function alterarPrevisao(index, delta) {
+  jogadores[index].previsao = Math.max(0, jogadores[index].previsao + delta);
+  atualizarJogadores();
+  salvarDados();
+}
+
+// Atualizar previsão via input
+function atualizarPrevisao(index, valor) {
+  jogadores[index].previsao = Math.max(0, parseInt(valor) || 0);
+  atualizarJogadores();
+  salvarDados();
+}
+
+function excluirJogador(index) {
+  jogadores.splice(index, 1);
+  atualizarJogadores();
+  salvarDados();
+}
+
+// Começa a rodada e grava as previsões iniciais para comparar depois
+function comecarRodada() {
+  if (!rodadaIniciada) {
+    document.getElementById("controlesIniciais").style.display = "none";
+    rodadaIniciada = true;
+  }
+
+  previsoesIniciais = jogadores.map(j => j.previsao);
+
+  const texto = jogadores.map(j => `O ${j.nome} leva ${j.previsao}`).join(', ');
+  falar(texto + ".");
+}
+
+// Finaliza rodada, calcula diferença entre previsão inicial e atual, atualiza pontos e fala mensagens
+function finalizarRodada() {
+  jogadores.forEach((j, i) => {
+    let diff = previsoesIniciais[i] - j.previsao; // diferença: previsao inicial - previsao atual (resultado real)
+
+    j.pontos -= Math.abs(diff); // desconta a diferença absoluta do placar
+
+    if (diff > 0) {
+      // Levou MENOS do que previu (clicou - no final) → puniçãoMenos
+      const msgPunicao = punicoesMenos[Math.floor(Math.random() * punicoesMenos.length)];
+      falar(`O ${j.nome} disse que levava ${previsoesIniciais[i]} e levou ${j.previsao}, agora está com ${j.pontos}. ${msgPunicao}`);
+    } else if (diff < 0) {
+      // Levou MAIS do que previu (clicou + no final) → puniçãoMais
+      const msgPunicao = punicoesMais[Math.floor(Math.random() * punicoesMais.length)];
+      falar(`O ${j.nome} disse que levava ${previsoesIniciais[i]} e levou ${j.previsao}, agora está com ${j.pontos}. ${msgPunicao}`);
+    } else {
+      // Acertou exatamente
+      const msgBonus = bonuses[Math.floor(Math.random() * bonuses.length)];
+      falar(`O ${j.nome} acertou e agora está com ${j.pontos}! ${msgBonus}`);
+    }
+  });
+
+  atualizarJogadores();
+  salvarDados();
+}
+
+function atualizarJogadores() {
+  const lista = document.getElementById("listaJogadores");
+  lista.innerHTML = "";
+
+  jogadores.forEach((j, i) => {
+    const card = document.createElement("div");
+    card.className = "jogador-card";
+
+    card.innerHTML = `
+      <div class="jogador-info">
+        <img src="${j.foto}" alt="foto" />
+        <span>${j.nome} <div class="pontosdiv">${j.pontos}</div> pts</span>
+      </div>
+      <div class="acoes">
+      
+        <label>Cantada</label>
+        <div class="botoesdeacoes">
+            <button class="menos" onclick="alterarPrevisao(${i}, -1)">-1</button>
+            <input type="number" min="0" value="${j.previsao}" onchange="atualizarPrevisao(${i}, this.value)" />
+            <button class="mais" onclick="alterarPrevisao(${i}, 1)">+1</button>
+        </div>
+        </div>
+      <div class="acoes">
+        <label>Cantada</label>
+        <label></label>
+        <span class="pontosdivcantada">${j.previsao}</span>
+      </div>
+      <div class="acoes botoes-rodada">
+        <button class="excluir" onclick="excluirJogador(${i})">🗑️</button>
+      </div>
+    `;
+
+    lista.appendChild(card);
+  });
+}
+
+// Botão para reiniciar tudo e mostrar formulário de adicionar jogadores
+function reiniciarTudo() {
+  if (confirm("Tem certeza? Os jogadores e pontos serão apagados!")) {
+    jogadores = [];
+    pontosIniciais = 0;
+    rodadaIniciada = false;
+    document.getElementById("controlesIniciais").style.display = "flex"; // mostra o formulário
+    atualizarJogadores();
+    salvarDados();
+  }
+}
+const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+fullscreenBtn.addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+    fullscreenBtn.innerText = 'Sair Tela Cheia';
+  } else {
+    document.exitFullscreen();
+    fullscreenBtn.innerText = 'Tela Cheia';
+  }
+});
+
+
+  </script>
+</body>
+</html>
