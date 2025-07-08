@@ -250,9 +250,9 @@ let rodadaIniciada = false;
 let previsoesIniciais = []; // guarda previsão original no começo da rodada
 
 // Mensagens de punição e bônus (substitua depois)
-const punicoesMais = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-const punicoesMenos = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-const bonuses = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const punicoesMais = ['quem mandou levar demais', 'bem feito', 'trouxa ', 'ruinzão', 'iiiiisso quer ferrar com o amiguinho e se ferra junto', 'vai perder heim', 'grande perdedor', 'ta achando que é brincadeira é'];
+const punicoesMenos = ['foi quase pena que é ruim', 'bem feito otário', 'achou que ia levar mais né', 'da proxima fala que não leva nada', 'essa é pra tu aprender', 'passou vergonha', 'grande errador ', 'porque não fala que leva todas de uma vez?'];
+const bonuses = ['boa', 'cagado', 'sortudo', 'isso ai', 'iiiissooo ', 'fez bonito', 'jogando desse jeito é facil', 'arrazou'];
 
 // Carregar dados do localStorage ao iniciar a página
 window.onload = () => {
@@ -344,15 +344,15 @@ function finalizarRodada() {
     if (diff > 0) {
       // Levou MENOS do que previu (clicou - no final) → puniçãoMenos
       const msgPunicao = punicoesMenos[Math.floor(Math.random() * punicoesMenos.length)];
-      falar(`O ${j.nome} disse que levava ${previsoesIniciais[i]} e levou ${j.previsao}, agora está com ${j.pontos}. ${msgPunicao}`);
+      falar(` ${j.nome} disse que levava ${previsoesIniciais[i]} e levou ${j.previsao}, agora está com ${j.pontos}. ${msgPunicao}`);
     } else if (diff < 0) {
       // Levou MAIS do que previu (clicou + no final) → puniçãoMais
       const msgPunicao = punicoesMais[Math.floor(Math.random() * punicoesMais.length)];
-      falar(`O ${j.nome} disse que levava ${previsoesIniciais[i]} e levou ${j.previsao}, agora está com ${j.pontos}. ${msgPunicao}`);
+      falar(` ${j.nome} disse que levava ${previsoesIniciais[i]} e levou ${j.previsao}, agora está com ${j.pontos}. ${msgPunicao}`);
     } else {
       // Acertou exatamente
       const msgBonus = bonuses[Math.floor(Math.random() * bonuses.length)];
-      falar(`O ${j.nome} acertou e agora está com ${j.pontos}! ${msgBonus}`);
+      falar(` ${j.nome} acertou e agora está com ${j.pontos}! ${msgBonus}`);
     }
   });
 
